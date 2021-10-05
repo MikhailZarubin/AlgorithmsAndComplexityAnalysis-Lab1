@@ -1,9 +1,7 @@
 #include "Graf.h"
-
 #include <algorithm>
-#include <set>
 
-GrafArray::GrafArray(int vC, int eC, int minWeight, int maxWieght) : vertexCount(vC), edgeCount(std::min(eC, vertexCount* (vertexCount - 1) / 2)), edgeContainer(edgeCount, { 0,0 })
+GrafArray::GrafArray(int vC, int eC, int minWeight, int maxWieght) : vertexCount(vC), edgeCount(std::min(eC, vertexCount* (vertexCount - 1) / 2))
 {
 	int freeEdge = edgeCount;
 
@@ -18,6 +16,7 @@ GrafArray::GrafArray(int vC, int eC, int minWeight, int maxWieght) : vertexCount
 			freeEdge--;
 	    }
 	}
+	std::sort(edgeContainer.begin(), edgeContainer.end(), [this](std::pair<int, int> a, std::pair<int, int> b) { return graf[a.first][a.second] < graf[b.first][b.second]; });
 }
 
 GrafArray::~GrafArray()
