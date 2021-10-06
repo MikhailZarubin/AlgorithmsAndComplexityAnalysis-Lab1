@@ -12,16 +12,12 @@ int main()
 	std::cout << "Maximum Weight: ";
 	std::cin >> maxW;
 	GrafArray graf(vC, eC, minW, maxW);
-	int scet{ 0 };
 	for (int i = 0; i < vC; i++)
 	{
 		for (int j = 0; j < vC; j++)
-		{
 			std::cout << graf.getWeightEdge(i, j) << ' ';
-			if (graf.getWeightEdge(i, j) != 0)
-				scet++;
-		}
 		std::cout << std::endl;
 	}
-	std::cout << scet;
+	auto res = graf.KruskalAlgorithm();
+	std::cout << "SUM=" << res.second;
 }
