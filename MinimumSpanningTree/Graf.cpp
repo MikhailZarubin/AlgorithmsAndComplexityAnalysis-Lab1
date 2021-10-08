@@ -64,7 +64,8 @@ std::pair<std::vector<std::pair<int, int>>, int> GrafArray::KruskalAlgorithm()
 	std::vector<std::pair<int, int>> result;
 	std::vector<std::vector<int>> groupTree;
 	int* numberGroupVertex = new int [vertexCount] { 0 };
-	int sum{ 0 }, lastGroup{ 0 }, occupedVertex{ 1 };
+	int sum{ 0 };
+	int lastGroup{ 0 }, occupedVertex{ 1 };
 
 	std::sort(edgeContainer, edgeContainer + edgeCount, [&](std::pair<int, int> a, std::pair<int, int> b) { return graf[a.first][a.second] < graf[b.first][b.second]; });
 
