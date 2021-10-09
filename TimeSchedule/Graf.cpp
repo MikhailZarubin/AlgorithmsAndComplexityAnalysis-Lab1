@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <vector>
 
-GrafArray::GrafArray(int vC, int eC, int minWeight, int maxWieght) : vertexCount(vC), edgeCount(std::min(eC, vertexCount* (vertexCount - 1) / 2))
+Graf::Graf(int vC, int eC, int minWeight, int maxWieght) : vertexCount(vC), edgeCount(std::min(eC, vertexCount* (vertexCount - 1) / 2))
 {
 	int freeEdge = 0;
 	edgeContainer = new std::pair<int, int>[edgeCount];
@@ -21,7 +21,7 @@ GrafArray::GrafArray(int vC, int eC, int minWeight, int maxWieght) : vertexCount
 	}
 }
 
-GrafArray::GrafArray(const GrafArray& copyGraf) : vertexCount(copyGraf.vertexCount), edgeCount(copyGraf.edgeCount)
+Graf::Graf(const Graf& copyGraf) : vertexCount(copyGraf.vertexCount), edgeCount(copyGraf.edgeCount)
 {
 	int freeEdge = 0;
 	edgeContainer = new std::pair<int, int>[edgeCount];
@@ -39,7 +39,7 @@ GrafArray::GrafArray(const GrafArray& copyGraf) : vertexCount(copyGraf.vertexCou
 	}
 }
 
-GrafArray::~GrafArray()
+Graf::~Graf()
 {
 	for (int i = 0; i < vertexCount - 1; i++)
 		delete[] graf[i];
@@ -47,7 +47,7 @@ GrafArray::~GrafArray()
 	delete[] edgeContainer;
 }
 
-int GrafArray::getWeightEdge(int vertexOne, int vertexTwo) const
+int Graf::getWeightEdge(int vertexOne, int vertexTwo) const
 {
 	if (vertexOne >= vertexCount || vertexTwo >= vertexCount)
 		throw vertexCount;
@@ -59,12 +59,13 @@ int GrafArray::getWeightEdge(int vertexOne, int vertexTwo) const
 		return graf[vertexOne][--vertexTwo - vertexOne];
 }
 
-std::pair<std::vector<std::pair<int, int>>, int> GrafArray::KruskalAlgorithm()
+std::pair<std::vector<std::pair<int, int>>, int> Graf::KruskalAlgorithm()
 {
 	std::vector<std::pair<int, int>> result;
 	std::vector<std::vector<int>> groupTree;
 	int* numberGroupVertex = new int [vertexCount] { 0 };
-	int sum{ 0 }, lastGroup{ 0 }, occupedVertex{ 1 };
+	int sum{ 0 };
+	int lastGroup{ 0 }, occupedVertex{ 1 };
 
 	std::sort(edgeContainer, edgeContainer + edgeCount, [&](std::pair<int, int> a, std::pair<int, int> b) { return graf[a.first][a.second] < graf[b.first][b.second]; });
 
@@ -75,7 +76,7 @@ std::pair<std::vector<std::pair<int, int>>, int> GrafArray::KruskalAlgorithm()
 		if (numberGroupVertex[firstVertex] != numberGroupVertex[twoVertex] || (numberGroupVertex[firstVertex] == 0 || numberGroupVertex[twoVertex] == 0))
 		{
 			result.push_back(edgeContainer[i]);
-			if (numberGroupVertex[firstVertex] == 0 && numberGroupVertex[twoVertex] == 0) 
+			if (numberGroupVertex[firstVertex] == 0 && numberGroupVertex[twoVertex] == 0)
 			{
 				numberGroupVertex[twoVertex] = ++lastGroup;
 				numberGroupVertex[firstVertex] = lastGroup;
@@ -116,5 +117,5 @@ std::pair<std::vector<std::pair<int, int>>, int> GrafArray::KruskalAlgorithm()
 		}
 	}
 	delete[] numberGroupVertex;
-	return std::pair<std::vector<std::pair<int ,int>>, int> { result, sum };
+	return std::pair<std::vector<std::pair<int, int>>, int> { result, sum };
 }

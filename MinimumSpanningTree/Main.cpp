@@ -14,7 +14,7 @@ int main()
 	std::cin >> minW;
 	std::cout << "Maximum Weight: ";
 	std::cin >> maxW;
-	GrafArray graf(vC, eC, minW, maxW);
+	Graf graf(vC, eC, minW, maxW);
 	if(vC < 10)
 		for (int i = 0; i < vC; i++)
 		{

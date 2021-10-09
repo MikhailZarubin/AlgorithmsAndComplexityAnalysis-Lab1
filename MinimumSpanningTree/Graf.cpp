@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <vector>
 
-GrafArray::GrafArray(int vC, int eC, int minWeight, int maxWieght) : vertexCount(vC), edgeCount(std::min(eC, vertexCount* (vertexCount - 1) / 2))
+Graf::Graf(int vC, int eC, int minWeight, int maxWieght) : vertexCount(vC), edgeCount(std::min(eC, vertexCount* (vertexCount - 1) / 2))
 {
 	int freeEdge = 0;
 	edgeContainer = new std::pair<int, int>[edgeCount];
@@ -21,7 +21,7 @@ GrafArray::GrafArray(int vC, int eC, int minWeight, int maxWieght) : vertexCount
 	}
 }
 
-GrafArray::GrafArray(const GrafArray& copyGraf) : vertexCount(copyGraf.vertexCount), edgeCount(copyGraf.edgeCount)
+Graf::Graf(const Graf& copyGraf) : vertexCount(copyGraf.vertexCount), edgeCount(copyGraf.edgeCount)
 {
 	int freeEdge = 0;
 	edgeContainer = new std::pair<int, int>[edgeCount];
@@ -39,7 +39,7 @@ GrafArray::GrafArray(const GrafArray& copyGraf) : vertexCount(copyGraf.vertexCou
 	}
 }
 
-GrafArray::~GrafArray()
+Graf::~Graf()
 {
 	for (int i = 0; i < vertexCount - 1; i++)
 		delete[] graf[i];
@@ -47,7 +47,7 @@ GrafArray::~GrafArray()
 	delete[] edgeContainer;
 }
 
-int GrafArray::getWeightEdge(int vertexOne, int vertexTwo) const
+int Graf::getWeightEdge(int vertexOne, int vertexTwo) const
 {
 	if (vertexOne >= vertexCount || vertexTwo >= vertexCount)
 		throw vertexCount;
@@ -59,8 +59,13 @@ int GrafArray::getWeightEdge(int vertexOne, int vertexTwo) const
 		return graf[vertexOne][--vertexTwo - vertexOne];
 }
 
-std::pair<std::vector<std::pair<int, int>>, int> GrafArray::KruskalAlgorithm()
+std::pair<std::vector<std::pair<int, int>>, int> Graf::KruskalAlgorithm()
 {
+	if (edgeCount < vertexCount - 1)
+	{
+		return { {}, 0 };
+	}
+
 	std::vector<std::pair<int, int>> result;
 	std::vector<std::vector<int>> groupTree;
 	int* numberGroupVertex = new int [vertexCount] { 0 };
@@ -118,4 +123,9 @@ std::pair<std::vector<std::pair<int, int>>, int> GrafArray::KruskalAlgorithm()
 	}
 	delete[] numberGroupVertex;
 	return std::pair<std::vector<std::pair<int ,int>>, int> { result, sum };
+}
+
+std::pair<std::vector<std::pair<int, int>>, int> Graf::PrimAlgorithm()
+{
+	return { {}, 0 };
 }

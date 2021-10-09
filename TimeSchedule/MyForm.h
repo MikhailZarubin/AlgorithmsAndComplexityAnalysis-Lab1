@@ -26,19 +26,18 @@ namespace CppWinForm1 {
 	public ref class MyForm : public System::Windows::Forms::Form
 	{
 		Graphics^ gr;
-		Pen^ pen, ^penScheduleKruskal;
+		Pen^ pen, ^penScheduleKruskal, ^penSchedulePrim;
 
 
 	private: System::Windows::Forms::Label^ label1;
 	private: System::Windows::Forms::Label^ label2;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column1;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column2;
 	private: System::Windows::Forms::Button^ button1;
 	private: System::Windows::Forms::Button^ button2;
-
-
-
-
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column1;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column2;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column3;
+	private: System::Windows::Forms::Label^ label3;
+	private: System::Windows::Forms::Label^ label4;
 	private: System::Windows::Forms::DataGridView^ dataGridView1;
 	public:
 		MyForm(void)
@@ -47,7 +46,9 @@ namespace CppWinForm1 {
 			this->gr = CreateGraphics();
 			this->pen = gcnew Pen(Color::Black);
 			this->penScheduleKruskal = gcnew Pen(Color::Purple);
+			this->penSchedulePrim = gcnew Pen(Color::Red);
 			this->penScheduleKruskal->Width = 3.0;
+			this->penSchedulePrim->Width = 3.0;
 
 			for (int i = 0; i < countRows ; i++)
 			{
@@ -79,23 +80,26 @@ namespace CppWinForm1 {
 			   this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
 			   this->Column1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			   this->Column2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			   this->Column3 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			   this->label1 = (gcnew System::Windows::Forms::Label());
 			   this->label2 = (gcnew System::Windows::Forms::Label());
 			   this->button1 = (gcnew System::Windows::Forms::Button());
 			   this->button2 = (gcnew System::Windows::Forms::Button());
+			   this->label3 = (gcnew System::Windows::Forms::Label());
+			   this->label4 = (gcnew System::Windows::Forms::Label());
 			   (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
 			   this->SuspendLayout();
 			   // 
 			   // dataGridView1
 			   // 
 			   this->dataGridView1->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			   this->dataGridView1->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(2) {
+			   this->dataGridView1->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(3) {
 				   this->Column1,
-					   this->Column2
+					   this->Column2, this->Column3
 			   });
-			   this->dataGridView1->Location = System::Drawing::Point(339, 499);
+			   this->dataGridView1->Location = System::Drawing::Point(222, 499);
 			   this->dataGridView1->Name = L"dataGridView1";
-			   this->dataGridView1->Size = System::Drawing::Size(240, 150);
+			   this->dataGridView1->Size = System::Drawing::Size(440, 150);
 			   this->dataGridView1->TabIndex = 1;
 			   // 
 			   // Column1
@@ -107,8 +111,15 @@ namespace CppWinForm1 {
 			   // Column2
 			   // 
 			   this->Column2->Frozen = true;
-			   this->Column2->HeaderText = L"ExecutionTime";
+			   this->Column2->HeaderText = L"ExecutionTimeKruskal";
 			   this->Column2->Name = L"Column2";
+			   this->Column2->Width = 150;
+			   // 
+			   // Column3
+			   // 
+			   this->Column3->HeaderText = L"Execution Time Prim";
+			   this->Column3->Name = L"Column3";
+			   this->Column3->Width = 150;
 			   // 
 			   // label1
 			   // 
@@ -124,7 +135,7 @@ namespace CppWinForm1 {
 			   this->label2->AutoSize = true;
 			   this->label2->Location = System::Drawing::Point(60, 50);
 			   this->label2->Name = L"label2";
-			   this->label2->Size = System::Drawing::Size(54, 13);
+			   this->label2->Size = System::Drawing::Size(48, 13);
 			   this->label2->TabIndex = 3;
 			   this->label2->Text = L"Time, 2c";
 			   // 
@@ -155,6 +166,24 @@ namespace CppWinForm1 {
 			   this->button2->Visible = false;
 			   this->button2->Click += gcnew System::EventHandler(this, &MyForm::button2_Click);
 			   // 
+			   // label3
+			   // 
+			   this->label3->AutoSize = true;
+			   this->label3->Location = System::Drawing::Point(822, 499);
+			   this->label3->Name = L"label3";
+			   this->label3->Size = System::Drawing::Size(42, 14);
+			   this->label3->TabIndex = 5;
+			   this->label3->Text = L"Kruskal";
+			   // 
+			   // label4
+			   // 
+			   this->label4->AutoSize = true;
+			   this->label4->Location = System::Drawing::Point(822, 529);
+			   this->label4->Name = L"label4";
+			   this->label4->Size = System::Drawing::Size(42, 14);
+			   this->label4->TabIndex = 7;
+			   this->label4->Text = L"Prim";
+			   // 
 			   // MyForm
 			   // 
 			   this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -162,6 +191,8 @@ namespace CppWinForm1 {
 			   this->BackColor = System::Drawing::SystemColors::Window;
 			   this->ClientSize = System::Drawing::Size(884, 661);
 			   this->Controls->Add(this->button1);
+			   this->Controls->Add(this->label4);
+			   this->Controls->Add(this->label3);
 			   this->Controls->Add(this->button2);
 			   this->Controls->Add(this->label2);
 			   this->Controls->Add(this->label1);
@@ -186,7 +217,6 @@ namespace CppWinForm1 {
 		gr->DrawLine(pen, 750, 400, 745, 395);
 		gr->DrawLine(pen, 750, 400, 745, 405);
 
-		GrafTest::Timer timer;
 		int stepX = 700 / (maxEdgeCount / edgeStep), stepY = 10;
 
 		for (int i = 57; i <= 750 - stepX; i += stepX)
@@ -197,6 +227,9 @@ namespace CppWinForm1 {
 
 		this->pen->Width = 4.0;
 		gr->DrawEllipse(pen, 48, 398, 4, 4);
+
+		gr->DrawLine(penScheduleKruskal, 785, 506, 815, 506);
+		gr->DrawLine(penSchedulePrim, 785, 536, 815, 536);
 	}
 private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
 	this->button2->Visible = false;
@@ -206,7 +239,7 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 
 	for (int i = 0; i <= maxEdgeCount; i += edgeStep)
 		{
-			GrafArray graf(vertexCount, i, minWeightEdge, maxWeightEdge);
+			Graf graf(vertexCount, i, minWeightEdge, maxWeightEdge);
 
 			timer.resetTimer();
 			graf.KruskalAlgorithm();

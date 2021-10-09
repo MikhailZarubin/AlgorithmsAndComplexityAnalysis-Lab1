@@ -18,10 +18,10 @@
     <ClCompile Include="MyForm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\MinimumSpanningTree\Graf.cpp">
+    <ClCompile Include="..\MinimumSpanningTree\Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\MinimumSpanningTree\Timer.cpp">
+    <ClCompile Include="Graf.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,10 +29,10 @@
     <ClInclude Include="MyForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\MinimumSpanningTree\Graf.h">
+    <ClInclude Include="..\MinimumSpanningTree\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\MinimumSpanningTree\Timer.h">
+    <ClInclude Include="Graf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
