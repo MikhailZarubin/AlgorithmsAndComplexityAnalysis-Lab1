@@ -139,10 +139,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Heap.h" />
     <ClInclude Include="Graf.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Heap.cpp" />
     <ClCompile Include="Graf.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Timer.cpp" />
