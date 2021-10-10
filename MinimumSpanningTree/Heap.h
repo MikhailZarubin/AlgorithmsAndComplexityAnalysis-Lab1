@@ -165,7 +165,7 @@ void BinaryHeap<dataType, value>::deleteElem(int index)
 	if (index >= currentSize)
 		throw index;
 
-	sumValue -= heapContainer[index];
+	sumValue -= heapContainer[index].second;
 	heapContainer[index] = heapContainer[--currentSize];
 
 	recoverHeap(index);
