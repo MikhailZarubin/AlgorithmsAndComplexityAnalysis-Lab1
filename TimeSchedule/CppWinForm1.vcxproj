@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClInclude Include="..\MinimumSpanningTree\Timer.h" />
     <ClInclude Include="Graf.h" />
+    <ClInclude Include="Heap.h" />
     <ClInclude Include="MyForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>

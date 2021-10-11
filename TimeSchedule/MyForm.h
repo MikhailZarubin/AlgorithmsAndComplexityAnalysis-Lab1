@@ -141,7 +141,7 @@ namespace CppWinForm1 {
 			   this->label2->Name = L"label2";
 			   this->label2->Size = System::Drawing::Size(48, 13);
 			   this->label2->TabIndex = 3;
-			   this->label2->Text = L"Time, 1c";
+			   this->label2->Text = L"Time, 2c";
 			   // 
 			   // button1
 			   // 
@@ -239,7 +239,7 @@ namespace CppWinForm1 {
 private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
 	this->button2->Visible = false;
 
-	int lastPointX = 50, lastPointY = 400, startPointY = 400, stepX = 700 / (maxEdgeCount / edgeStep), numberRow = 0;
+	int lastPointX = 50, lastPointKruskalY = 400, lastPointPrimY = 400, startPointY = 400, stepX = 700 / (maxEdgeCount / edgeStep), numberRow = 0;
 	GrafTest::Timer timer;
 
 	for (int i = 0; i <= maxEdgeCount; i += edgeStep)
@@ -248,14 +248,21 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 
 		timer.resetTimer();
 		graf.KruskalAlgorithm();
-		double time = timer.getTime();
+		double timeKruskal = timer.getTime();
+
+		timer.resetTimer();
+		graf.PrimAlgorithm();
+		double timePrim = timer.getTime();
 
 		this->dataGridView1->Rows[numberRow]->Cells[0]->Value = i;
-		this->dataGridView1->Rows[numberRow++]->Cells[1]->Value = time;
+		this->dataGridView1->Rows[numberRow]->Cells[1]->Value = timeKruskal;
+		this->dataGridView1->Rows[numberRow++]->Cells[2]->Value = timePrim;
 
-		gr->DrawLine(penScheduleKruskal, lastPointX, lastPointY, lastPointX + stepX, startPointY - time * 10.);
+		gr->DrawLine(penScheduleKruskal, lastPointX, lastPointKruskalY, lastPointX + stepX, startPointY - timeKruskal * 5.);
+		gr->DrawLine(penSchedulePrim, lastPointX, lastPointPrimY, lastPointX + stepX, startPointY - timePrim * 5.);
 		lastPointX += stepX;
-		lastPointY = startPointY - time * 10.;
+		lastPointKruskalY = startPointY - timeKruskal * 5.;
+		lastPointPrimY = startPointY - timePrim * 5.;
 	}
 }
 };
