@@ -2,7 +2,6 @@
 
 #include "Heap.h"
 
-#include <iostream>
 #include <vector>
 
 class Graf
@@ -17,8 +16,8 @@ public:
 	Graf(const Graf& copyGraf);
 	~Graf();
 	int getWeightEdge(int vertexOne, int vertexTwo) const;
-	std::pair < std::vector < std::pair<int, int>>, int > KruskalAlgorithm();
-	std::pair < std::vector < std::pair<int, int>>, int> PrimAlgorithm();
+	std::pair <std::vector<std::pair<int, int>>, int> KruskalAlgorithm();
+	std::pair <std::vector<std::pair<int, int>>, int> PrimAlgorithm();
 	void recoverEdgeHeap();
 };
 
