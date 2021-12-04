@@ -26,7 +26,7 @@ namespace CppWinForm1 {
 	private: System::Windows::Forms::Label^ label1;
 	private: System::Windows::Forms::Label^ label2;
 	private: System::Windows::Forms::Button^ button1;
-	private: System::Windows::Forms::Button^ button2;
+
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column1;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column2;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column3;
@@ -75,7 +75,6 @@ namespace CppWinForm1 {
 			   this->label1 = (gcnew System::Windows::Forms::Label());
 			   this->label2 = (gcnew System::Windows::Forms::Label());
 			   this->button1 = (gcnew System::Windows::Forms::Button());
-			   this->button2 = (gcnew System::Windows::Forms::Button());
 			   this->label3 = (gcnew System::Windows::Forms::Label());
 			   this->label4 = (gcnew System::Windows::Forms::Label());
 			   (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
@@ -89,7 +88,7 @@ namespace CppWinForm1 {
 					   this->Column2, this->Column3
 			   });
 			   this->dataGridView1->Location = System::Drawing::Point(296, 614);
-			   this->dataGridView1->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
+			   this->dataGridView1->Margin = System::Windows::Forms::Padding(4);
 			   this->dataGridView1->Name = L"dataGridView1";
 			   this->dataGridView1->RowHeadersWidth = 51;
 			   this->dataGridView1->Size = System::Drawing::Size(587, 185);
@@ -124,7 +123,7 @@ namespace CppWinForm1 {
 			   this->label1->Location = System::Drawing::Point(1000, 498);
 			   this->label1->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			   this->label1->Name = L"label1";
-			   this->label1->Size = System::Drawing::Size(117, 17);
+			   this->label1->Size = System::Drawing::Size(78, 17);
 			   this->label1->TabIndex = 2;
 			   this->label1->Text = L"EdgeCount";
 			   // 
@@ -136,7 +135,7 @@ namespace CppWinForm1 {
 			   this->label2->Name = L"label2";
 			   this->label2->Size = System::Drawing::Size(62, 17);
 			   this->label2->TabIndex = 3;
-			   this->label2->Text = L"Time, 2c";
+			   this->label2->Text = L"Time, 1c";
 			   // 
 			   // button1
 			   // 
@@ -146,26 +145,13 @@ namespace CppWinForm1 {
 			   this->button1->ForeColor = System::Drawing::SystemColors::ActiveCaptionText;
 			   this->button1->ImageAlign = System::Drawing::ContentAlignment::TopCenter;
 			   this->button1->Location = System::Drawing::Point(0, 0);
-			   this->button1->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
+			   this->button1->Margin = System::Windows::Forms::Padding(4);
 			   this->button1->Name = L"button1";
 			   this->button1->Size = System::Drawing::Size(1179, 814);
 			   this->button1->TabIndex = 0;
 			   this->button1->Text = L"Click To Continue";
 			   this->button1->UseVisualStyleBackColor = false;
 			   this->button1->Click += gcnew System::EventHandler(this, &MyForm::button1_Click);
-			   // 
-			   // button2
-			   // 
-			   this->button2->Location = System::Drawing::Point(536, 550);
-			   this->button2->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
-			   this->button2->Name = L"button2";
-			   this->button2->Size = System::Drawing::Size(107, 31);
-			   this->button2->TabIndex = 4;
-			   this->button2->Text = L"Start Testing";
-			   this->button2->UseMnemonic = false;
-			   this->button2->UseVisualStyleBackColor = false;
-			   this->button2->Visible = false;
-			   this->button2->Click += gcnew System::EventHandler(this, &MyForm::button2_Click);
 			   // 
 			   // label3
 			   // 
@@ -196,11 +182,10 @@ namespace CppWinForm1 {
 			   this->Controls->Add(this->button1);
 			   this->Controls->Add(this->label4);
 			   this->Controls->Add(this->label3);
-			   this->Controls->Add(this->button2);
 			   this->Controls->Add(this->label2);
 			   this->Controls->Add(this->label1);
 			   this->Controls->Add(this->dataGridView1);
-			   this->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
+			   this->Margin = System::Windows::Forms::Padding(4);
 			   this->Name = L"MyForm";
 			   this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			   this->Text = L"TimeSchedule";
@@ -210,17 +195,12 @@ namespace CppWinForm1 {
 
 		   }
 #pragma endregion
-	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
-		button1->Visible = false;
-		button2->Visible = true;
-	}
-
-private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
-	this->button2->Visible = false;
+private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+	button1->Visible = false;
 
 	//get size graf
-	std::ifstream fileKruskal("../KruskalData.txt");
-	std::ifstream filePrim("../PrimData.txt");
+	std::ifstream fileKruskal("../KruskalDataFullTest.txt");
+	std::ifstream filePrim("../PrimDataFullTest.txt");
 	const int bufferLenght = 250;
 	char bufferKruskal[bufferLenght], bufferPrim[bufferLenght];
 
@@ -295,11 +275,11 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 		this->dataGridView1->Rows[numberRow]->Cells[1]->Value = timeKruskal;
 		this->dataGridView1->Rows[numberRow++]->Cells[2]->Value = timePrim;
 
-		gr->DrawLine(penScheduleKruskal, lastPointX, lastPointKruskalY, lastPointX + stepX, startPointY - timeKruskal * 5.);
-		gr->DrawLine(penSchedulePrim, lastPointX, lastPointPrimY, lastPointX + stepX, startPointY - timePrim * 5.);
+		gr->DrawLine(penScheduleKruskal, lastPointX, lastPointKruskalY, lastPointX + stepX, startPointY - timeKruskal * 10.);
+		gr->DrawLine(penSchedulePrim, lastPointX, lastPointPrimY, lastPointX + stepX, startPointY - timePrim * 10.);
 		lastPointX += stepX;
-		lastPointKruskalY = startPointY - timeKruskal * 5.;
-		lastPointPrimY = startPointY - timePrim * 5.;
+		lastPointKruskalY = startPointY - timeKruskal * 10.;
+		lastPointPrimY = startPointY - timePrim * 10.;
 
 		numberIter += stepEdgeCount;
 	}
