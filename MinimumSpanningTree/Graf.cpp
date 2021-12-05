@@ -1,4 +1,3 @@
-#include "Heap.h"
 #include "Graf.h"
 
 #include <algorithm>
@@ -12,6 +11,7 @@ Graf::Graf(int vC, int eC, int minWeight, int maxWieght) : vertexCount(vC), edge
 	edgeContainer = new std::pair<int, int>[edgeCount];
 
 	graf = new int* [vertexCount - 1];
+	edgeHeap = new BinaryHeap<int, int>[vertexCount] {vertexCount};
 
 	std::random_device dev;
 	std::mt19937 gen(dev());
@@ -26,6 +26,8 @@ Graf::Graf(int vC, int eC, int minWeight, int maxWieght) : vertexCount(vC), edge
 
 			graf[i][j] = weight;
 			edgeContainer[freeEdge] = { i,j };
+			edgeHeap[i].insertElem({ j + i + 1, weight });
+			edgeHeap[j + i + 1].insertElem({ i, weight });
 			freeEdge++;
 		}
 	}
@@ -37,6 +39,7 @@ Graf::Graf(const Graf& copyGraf) : vertexCount(copyGraf.vertexCount), edgeCount(
 	edgeContainer = new std::pair<int, int>[edgeCount];
 
 	graf = new int* [vertexCount - 1];
+	edgeHeap = new BinaryHeap<int, int>[vertexCount - 1]{ vertexCount };
 	for (int i = 0; i < vertexCount - 1; i++)
 	{
 		graf[i] = new int[vertexCount - i - 1]{ 0 };
@@ -44,6 +47,7 @@ Graf::Graf(const Graf& copyGraf) : vertexCount(copyGraf.vertexCount), edgeCount(
 		{
 			graf[i][j] = copyGraf.graf[i][j];
 			edgeContainer[freeEdge] = { i,j };
+			edgeHeap[i].insertElem({ j, graf[i][j] });
 			freeEdge++;
 		}
 	}
@@ -55,6 +59,7 @@ Graf::~Graf()
 		delete[] graf[i];
 	delete[] graf;
 	delete[] edgeContainer;
+	delete[] edgeHeap;
 }
 
 int Graf::getWeightEdge(int vertexOne, int vertexTwo) const
@@ -67,6 +72,23 @@ int Graf::getWeightEdge(int vertexOne, int vertexTwo) const
 		return graf[vertexTwo][--vertexOne - vertexTwo];
 	else
 		return graf[vertexOne][--vertexTwo - vertexOne];
+}
+
+void Graf::recoverEdgeHeap()
+{
+	delete[] edgeHeap;
+	edgeHeap = new BinaryHeap<int, int>[vertexCount - 1];
+
+	int freeEdge = 0;
+	for (int i = 0; i < vertexCount - 1; i++)
+	{
+		for (int j = 0; j < vertexCount - 1 - i && freeEdge < edgeCount; j++)
+		{
+			edgeHeap[i].insertElem({ j + i + 1, graf[i][j] });
+			edgeHeap[j + i + 1].insertElem({ i, graf[i][j] });
+			freeEdge++;
+		}
+	}
 }
 
 std::pair<std::vector<std::pair<int, int>>, int> Graf::KruskalAlgorithm()
@@ -144,56 +166,35 @@ std::pair<std::vector<std::pair<int, int>>, int> Graf::PrimAlgorithm()
 	std::pair<std::vector<std::pair<int, int>>, int> result;
 	std::set<int> blockedVertex;
 
-	int minWeight = graf[0][0];
-	std::pair<int,int> startEdge = { 0, 1 };
-	for (int i = 1; i < vertexCount - 1; i++) {
-		if (graf[0][i] < minWeight)
-		{
-			minWeight = graf[0][i];
-			startEdge = { 0, i + 1 };
-		}
-	}
+	std::pair<int, int> startEdge = edgeHeap[0].getHead();
 
-	result.first.push_back(startEdge);
-	result.second += minWeight;
+	result.first.push_back({ 0, startEdge.first });
+	result.second += startEdge.second;
+	blockedVertex.insert(0);
+
 	blockedVertex.insert(startEdge.first);
-	blockedVertex.insert(startEdge.second);
 
 	while (blockedVertex.size() != vertexCount)
 	{
-		BinaryHeap<std::pair<int, int>, int> heapEdge;
-		for (const auto& currentVertex : blockedVertex)
+		BinaryHeap<std::pair<int, int>, int> temporaryHeap(vertexCount);
+
+		for (auto it : blockedVertex)
 		{
-			for (int i = 0; i < vertexCount; i++)
+			while (edgeHeap[it].getSize() > 0 && blockedVertex.find(edgeHeap[it].getHead().first) != blockedVertex.end()) {
+				edgeHeap[it].deleteElem(0);
+			}
+
+			if (edgeHeap[it].getSize() > 0)
 			{
-				if (i != currentVertex && blockedVertex.find(i) == blockedVertex.end())
-				{
-					int leftVertex, rightVertex;
-
-					if (i < currentVertex)
-					{
-						leftVertex = i;
-						rightVertex = currentVertex - i - 1;
-					}
-					else
-					{
-						leftVertex = currentVertex;
-						rightVertex = i - currentVertex - 1;
-					}
-
-					if (graf[leftVertex][rightVertex] > 0)
-						heapEdge.insertElem({ {currentVertex,i }, graf[leftVertex][rightVertex] });
-				}
+				temporaryHeap.insertElem({ {it, edgeHeap[it].getHead().first}, edgeHeap[it].getHead().second });
 			}
 		}
-		blockedVertex.size();
-		auto minEdge = heapEdge.getHead();
 
-		blockedVertex.insert(minEdge.first.first);
-		blockedVertex.insert(minEdge.first.second);
+		std::pair<std::pair<int, int>, int> newElem = temporaryHeap.deleteElem(0);
 
-		result.first.push_back(minEdge.first);
-		result.second += minEdge.second;
+		blockedVertex.insert(newElem.first.second);
+		result.first.push_back({ newElem.first.first, newElem.first.second });
+		result.second += newElem.second;
 	}
 
 	return result;

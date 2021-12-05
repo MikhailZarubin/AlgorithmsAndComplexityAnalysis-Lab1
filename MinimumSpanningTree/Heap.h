@@ -93,7 +93,12 @@ void BinaryHeap<dataType, value>::siftDown(int index)
 
 		if (heapContainer[left].second < heapContainer[index].second || heapContainer[right].second < heapContainer[index].second)
 		{
-			int newIndex = heapContainer[left].second < heapContainer[index].second ? left : right;
+			int newIndex;
+			if (heapContainer[left].second < heapContainer[index].second && heapContainer[left].second < heapContainer[right].second)
+				newIndex = left;
+			else
+				newIndex = right;
+
 			std::swap(heapContainer[newIndex], heapContainer[index]);
 			index = newIndex;
 		}
