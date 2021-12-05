@@ -1,6 +1,7 @@
 #include "Graf.h"
 
 #include <algorithm>
+#include <random>
 #include <vector>
 #include <set>
 
@@ -11,12 +12,17 @@ Graf::Graf(int vC, int eC, int minWeight, int maxWieght) : vertexCount(vC), edge
 
 	graf = new int* [vertexCount - 1];
 	edgeHeap = new BinaryHeap<int, int>[vertexCount - 1];
+
+	std::random_device dev;
+	std::mt19937 gen(dev());
+	std::uniform_real_distribution<> urd(minWeight, maxWieght);
 	for (int i = 0; i < vertexCount - 1; i++)
 	{
 		graf[i] = new int[vertexCount - i - 1]{ 0 };
 		for (int j = 0; j < vertexCount - 1 - i && freeEdge < edgeCount; j++)
 		{
-			int weight = static_cast<int>(minWeight + (maxWieght - minWeight) * (double)rand() / RAND_MAX);
+			int weight = static_cast<int>(urd(gen));
+			weight = weight <= 0 ? 1 : weight;
 
 			graf[i][j] = weight;
 			edgeContainer[freeEdge] = { i,j };
@@ -76,7 +82,7 @@ std::pair<std::vector<std::pair<int, int>>, int> Graf::KruskalAlgorithm()
 
 	std::vector<std::pair<int, int>> result;
 	std::vector<std::vector<int>> groupTree;
-	int* numberGroupVertex = new int [vertexCount] { 0 };
+	std::vector<int> numberGroupVertex(vertexCount, 0);
 	int sum{ 0 };
 	int lastGroup{ 0 }, occupedVertex{ 1 };
 
@@ -129,7 +135,6 @@ std::pair<std::vector<std::pair<int, int>>, int> Graf::KruskalAlgorithm()
 			occupedVertex++;
 		}
 	}
-	delete[] numberGroupVertex;
 	return std::pair<std::vector<std::pair<int ,int>>, int> { result, sum };
 }
 
