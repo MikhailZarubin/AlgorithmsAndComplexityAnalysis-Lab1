@@ -78,4 +78,20 @@ int main()
 			}
 		}
 	}
+	/*BinaryHeap<int, int> test;
+	while (test.getSize() < 5)
+	{
+		std::pair<int, int> newElem;
+		std::cin >> newElem.first >> newElem.second;
+		test.insertElem(newElem);
+		std::cout << '\n' << test << '\n';
+	}
+	std::cout << "DELETE\n";
+	while (test.getSize() > 0)
+	{
+		int deleteIndex;
+		std::cin >> deleteIndex;
+		test.deleteElem(deleteIndex);
+		std::cout << '\n' << test << '\n';
+	}*/
 }

@@ -10,18 +10,17 @@ class BinaryHeap
 	value sumValue;
 
 	int getLevel(int index) const;
-	int getExtremeLevel(int level, bool searchMaxElem) const;
-	void recoverHeap(int index = -1);
+	void siftUp(int index);
+	void siftDown(int index);
 	void allocation();
 
 public:
-	BinaryHeap(int size = 10000);
+	BinaryHeap(int size = 100);
 	BinaryHeap(const BinaryHeap& copyHeap);
 	~BinaryHeap();
 	void insertElem(std::pair<dataType, value> newElem);
-	std::pair<dataType, value> seeElem(int index = 0);
-	std::pair<dataType, value> deleteElem(int index = 0);
-	value getSum() const;
+	std::pair<dataType, value> deleteElem(int index);
+	std::pair<dataType, value> getHead();
 	int getSize() const;
 	friend std::ostream& operator<< (std::ostream& out, const BinaryHeap<dataType, value>& heap)
 	{
@@ -82,71 +81,37 @@ int BinaryHeap<dataType, value>::getLevel(int index) const
 }
 
 template<class dataType, class value>
-int BinaryHeap<dataType, value>::getExtremeLevel(int level, bool searchMaxElem) const
+void BinaryHeap<dataType, value>::siftDown(int index)
 {
-	if (level == 0)
-		return 0;
-
-	int left{ 0 };
-	for (int i = 0; i < level; i++)
+	while (2 * index + 1 < currentSize)
 	{
-		left += pow(2, i);
-	}
-	int right = left + pow(2, level), extremIndex = left;
-	value extremValue = heapContainer[left].second;
+		int left = 2 * index + 1;
+		int right = 2 * index + 2;
 
-	for (int i = left; i < std::min(right, currentSize); i++)
-	{
-		if ((searchMaxElem && extremValue < heapContainer[i].second) || (!searchMaxElem && extremValue > heapContainer[i].second))
+		if (right >= currentSize)
+			right = left;
+
+		if (heapContainer[left].second < heapContainer[index].second || heapContainer[right].second < heapContainer[index].second)
 		{
-			extremValue = heapContainer[i].second;
-			extremIndex = i;
+			int newIndex = heapContainer[left].second < heapContainer[index].second ? left : right;
+			std::swap(heapContainer[newIndex], heapContainer[index]);
+			index = newIndex;
 		}
+		else
+			break;
 	}
-
-	return extremIndex;
 }
 
 template<class dataType, class value>
-void BinaryHeap<dataType, value>::recoverHeap(int index)
+void BinaryHeap<dataType, value>::siftUp(int index)
 {
-	if (index >= currentSize)
-		throw index;
-
-	int maxLevel = getLevel(currentSize - 1);
-
-	if (index != -1)
+	while (heapContainer[index].second < heapContainer[(index - 1) / 2].second)
 	{
-		int currentLevel = getLevel(index);
+		std::swap(heapContainer[index], heapContainer[(index - 1) / 2]);
+		index = (index - 1) / 2;
 
-		if (currentLevel < maxLevel)
-		{
-			int indexMinElemNextLevel = getExtremeLevel(++currentLevel, false);
-
-			while (heapContainer[index].second > heapContainer[indexMinElemNextLevel].second && currentLevel <= maxLevel)
-			{
-				std::swap(heapContainer[index], heapContainer[indexMinElemNextLevel]);
-				index = indexMinElemNextLevel;
-				if (currentLevel < maxLevel)
-					indexMinElemNextLevel = getExtremeLevel(++currentLevel, false);
-			}
-		}
-	}
-
-	else
-	{
-		if (maxLevel > 0)
-		{
-			int index = currentSize - 1, indexMaxElemLastLevel = getExtremeLevel(--maxLevel, true);
-
-			while (heapContainer[index].second < heapContainer[indexMaxElemLastLevel].second && maxLevel >= 0)
-			{
-				std::swap(heapContainer[index], heapContainer[indexMaxElemLastLevel]);
-				index = indexMaxElemLastLevel;
-				if (maxLevel > 0)
-					indexMaxElemLastLevel = getExtremeLevel(--maxLevel, true);
-			}
-		}
+		if (index == 0)
+			break;
 	}
 }
 
@@ -159,7 +124,7 @@ void BinaryHeap<dataType, value>::insertElem(std::pair<dataType, value> newElem)
 	heapContainer[currentSize++] = newElem;
 	sumValue += newElem.second;
 
-	recoverHeap();
+	siftUp(currentSize - 1);
 }
 
 template<class dataType, class value>
@@ -174,30 +139,24 @@ std::pair<dataType, value> BinaryHeap<dataType, value>::deleteElem(int index)
 	heapContainer[index] = heapContainer[--currentSize];
 
 	if (currentSize > 1)
-		recoverHeap(index);
+		siftDown(index);
 
 	return deletingElem;
-}
-
-template <class dataType, class value>
-std::pair<dataType, value> BinaryHeap<dataType, value>::seeElem(int index)
-{
-	if (index >= currentSize)
-		throw index;
-
-	return heapContainer[index];
-}
-
-template<class dataType, class value>
-value BinaryHeap<dataType, value>::getSum() const
-{
-	return sumValue;
 }
 
 template<class dataType, class value>
 int BinaryHeap<dataType, value>::getSize() const
 {
 	return currentSize;
+}
+
+template<class dataType, class value>
+std::pair<dataType, value> BinaryHeap<dataType,value>::getHead()
+{
+	if (currentSize == 0)
+		throw 0;
+
+	return heapContainer[0];
 }
 
 template<class dataType, class value>
